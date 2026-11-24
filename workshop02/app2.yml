@@ -1,0 +1,75 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bggapp-deploy
+  namespace: bggns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pod-type: app
+  template:
+    metadata:
+      labels:
+        pod-type: app
+    spec:
+      containers:
+      - name: bggapp-deploy
+        image: stackupiss/bgg-backend:v1
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - configMapRef:
+              name:  bggapp-config
+          - secretRef:
+              name: app-secret
+        ports:
+        - name: app-port
+          containerPort: 3000
+          hostPort: 3000
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: app-port
+          timeoutSeconds: 5
+          failureThreshold: 3
+          successThreshold: 1
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bggapp-deploy2
+  namespace: bggns
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      pod-type: app
+  template:
+    metadata:
+      labels:
+        pod-type: app
+    spec:
+      containers:
+      - name: bggapp-deploy2
+        image: stackupiss/bgg-backend:v2
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - configMapRef:
+              name:  bggapp-config
+          - secretRef:
+              name: app-secret
+        ports:
+        - name: app-port
+          containerPort: 3000
+          hostPort: 3000
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: app-port
+          timeoutSeconds: 5
+          failureThreshold: 3
+          successThreshold: 1
+
+
