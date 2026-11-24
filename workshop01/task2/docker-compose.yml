@@ -1,0 +1,30 @@
+version: '3'
+
+volumes:
+  data-vol:
+
+networks:
+  # create a bridge network
+  app-net:
+
+services:
+  app:
+    image: stackupiss/northwind-app:v1
+    environment:
+    - APP_PORT=3000
+    - DB_HOST=db
+    - DB_USER=root
+    - DB_PASSWORD=changeit
+    networks:
+      - app-net
+    ports:
+    - 8080:3000
+
+  db:
+    image: stackupiss/northwind-db:v1
+    environment:
+    - MYSQL_ROOT_PASSWORD=changeit
+    networks:
+    - app-net
+    volumes:
+    - data-vol:/var/lib/mysql
