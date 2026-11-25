@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         pod-type: app
+        version: 1
     spec:
       containers:
       - name: bggapp-deploy
@@ -26,7 +27,6 @@ spec:
         ports:
         - name: app-port
           containerPort: 3000
-          hostPort: 3000
         livenessProbe:
           httpGet:
             path: /healthz
